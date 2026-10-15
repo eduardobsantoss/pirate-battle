@@ -14,3 +14,8 @@ dist/
 
 # Logs
 *.log
+
+# Tests
+playwright-report/
+test-results/
+blob-report/
