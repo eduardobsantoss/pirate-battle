@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { MatchRecordInput } from '../../api/contracts';
 import { useSubmissionStatus, useSubmitMatch } from '../../api/submissions';
 import { endReasonLabel, formatDuration } from '../format';
@@ -13,6 +14,9 @@ export function ResultScreen({
 }) {
   const { status, error } = useSubmissionStatus(record.matchId);
   const { submit } = useSubmitMatch();
+  // Once a failure happened keep the retry area mounted (no layout shift while retrying).
+  const [showRetry, setShowRetry] = useState(false);
+  if (status === 'failed' && !showRetry) setShowRetry(true);
 
   return (
     <div className="screen screen--center" data-testid="result-screen">
@@ -47,18 +51,21 @@ export function ResultScreen({
         </dl>
 
         <div aria-live="polite">
-          {status === 'failed' && (
+          {showRetry && status !== 'confirmed' && (
             <div className="state-box">
-              <p role="alert" className="error-text">
-                Couldn&apos;t save this match: {error} It is kept on this device.
-              </p>
+              {status === 'failed' && (
+                <p role="alert" className="error-text">
+                  Couldn&apos;t save this match: {error} It is kept on this device.
+                </p>
+              )}
               <button
                 type="button"
                 className="btn btn--secondary btn--small"
                 onClick={() => submit(record)}
+                disabled={status !== 'failed'}
                 data-testid="result-retry"
               >
-                Retry
+                {status === 'failed' ? 'Retry' : 'Retrying…'}
               </button>
             </div>
           )}

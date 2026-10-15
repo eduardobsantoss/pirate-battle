@@ -2,7 +2,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { submissions } from '../api/submissions';
 import { resetDb } from '../mocks/db';
-import { getScenario, isScenario, SCENARIOS, setScenario, type ScenarioId } from '../mocks/scenarios';
+import {
+  getAssetFailure,
+  getScenario,
+  isScenario,
+  SCENARIOS,
+  setAssetFailure,
+  setScenario,
+  type ScenarioId,
+} from '../mocks/scenarios';
 
 /**
  * Demo/testing panel to pick the mocked network scenario and reset the mock
@@ -11,6 +19,7 @@ import { getScenario, isScenario, SCENARIOS, setScenario, type ScenarioId } from
 export function NetworkPanel() {
   const [open, setOpen] = useState(false);
   const [scenario, setLocalScenario] = useState<ScenarioId>(getScenario);
+  const [failAssets, setFailAssets] = useState(() => getAssetFailure() !== null);
   const queryClient = useQueryClient();
 
   const change = (id: ScenarioId) => {
@@ -19,7 +28,14 @@ export function NetworkPanel() {
     void queryClient.invalidateQueries();
   };
 
+  const toggleAssets = (on: boolean) => {
+    // Fails one ship texture: enough to block the match and show the retry flow.
+    setAssetFailure(on ? 'ship_' : null);
+    setFailAssets(on);
+  };
+
   const reset = () => {
+    toggleAssets(false);
     resetDb();
     submissions.clear();
     change('success');
@@ -53,6 +69,15 @@ export function NetworkPanel() {
               </option>
             ))}
           </select>
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={failAssets}
+              onChange={(e) => toggleAssets(e.target.checked)}
+              data-testid="fail-assets"
+            />{' '}
+            Fail game asset loading
+          </label>
           <button type="button" className="link-button" onClick={reset} data-testid="network-reset">
             Reset mock data &amp; scenario
           </button>

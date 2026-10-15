@@ -66,7 +66,7 @@ export function RankingTab({ config, playerId }: { config: MatchConfigSnapshot; 
               </tbody>
             </table>
           </div>
-          <Pager page={data.page} totalPages={data.totalPages} onChange={setPage} label="Ranking" />
+          <Pager page={page} totalPages={data.totalPages} onChange={setPage} label="Ranking" />
         </>
       ) : null}
     </div>

@@ -125,6 +125,11 @@ export class GameController {
     });
 
     app.ticker.add(this.onTick);
+    if (this.options.manualClock) {
+      // Frames are produced by `advance()` only: deterministic and cheap in tests.
+      app.ticker.stop();
+      app.render();
+    }
     this.patch({ phase: 'running' });
   }
 
@@ -136,6 +141,7 @@ export class GameController {
     const root = this.renderer.root;
     root.scale.set(scale);
     root.position.set((width - ARENA.width * scale) / 2, (height - ARENA.height * scale) / 2);
+    if (this.options.manualClock) this.app.render();
   }
 
   private onTick = (ticker: Ticker): void => {
@@ -214,6 +220,7 @@ export class GameController {
       this.stepOnce();
       this.renderer?.sync(this.sim, 1, STEP_MS);
     }
+    this.app?.render();
   }
 
   renderStats() {

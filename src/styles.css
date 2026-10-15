@@ -85,12 +85,12 @@ button {
   overflow: auto;
   padding: 36px 32px 32px;
   color: var(--text);
-  background: linear-gradient(180deg, #213448, #172636);
+  /* The frame artwork (border-image `fill`) paints the panel body. */
+  background: none;
   border: 32px solid transparent;
-  border-width: 32px 32px;
   border-image: url('/assets/png/default/ui/menu/panel_menu.png') 40 32 40 32 fill / 32px 26px 32px 26px stretch;
   border-image-outset: 0;
-  box-shadow: 0 18px 40px rgb(0 0 0 / 0.45);
+  filter: drop-shadow(0 14px 24px rgb(0 0 0 / 0.45));
   text-align: center;
 }
 
@@ -693,5 +693,42 @@ dialog.dialog::backdrop {
   * {
     transition: none !important;
     animation: none !important;
+  }
+}
+
+/* Short landscape phones: compact panels so nothing is cut. */
+@media (max-height: 480px) {
+  .screen--center {
+    padding: 8px;
+  }
+  .panel {
+    padding: 4px 16px 8px;
+    border-width: 22px;
+    max-height: calc(100dvh - 16px);
+  }
+  .panel__title {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+  .result-score {
+    font-size: 2.4rem;
+    margin-bottom: 4px;
+  }
+  .result-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 4px;
+  }
+  .result-stats dd {
+    font-size: 1rem;
+  }
+  .panel__actions {
+    margin: 8px 0;
+  }
+  .btn {
+    min-height: 48px;
+    font-size: 1.1rem;
+  }
+  .title-art {
+    width: min(220px, 70%);
   }
 }

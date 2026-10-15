@@ -1,4 +1,4 @@
-import { readJson, STORAGE_PREFIX, writeJson } from '../storage/local';
+import { readJson, removeKey, STORAGE_PREFIX, writeJson } from '../storage/local';
 
 /**
  * Reproducible network conditions for the mocked ranking / history APIs.
@@ -38,10 +38,28 @@ export function setScenario(id: ScenarioId): void {
   writeJson(SCENARIO_KEY, id);
 }
 
-/** Applies `?scenario=` once at startup (handy for demos and tests). */
+const ASSET_FAILURE_KEY = `${STORAGE_PREFIX}mock-asset-failure`;
+
+/**
+ * When set, game asset requests whose URL contains this text fail with a
+ * network error (simulates a broken CDN / offline asset load).
+ */
+export function getAssetFailure(): string | null {
+  return readJson<string>(ASSET_FAILURE_KEY);
+}
+
+export function setAssetFailure(pattern: string | null): void {
+  if (pattern) writeJson(ASSET_FAILURE_KEY, pattern);
+  else removeKey(ASSET_FAILURE_KEY);
+}
+
+/** Applies `?scenario=` and `?failAssets=` once at startup (handy for demos and tests). */
 export function applyScenarioFromUrl(): void {
-  const fromUrl = new URLSearchParams(location.search).get('scenario');
+  const params = new URLSearchParams(location.search);
+  const fromUrl = params.get('scenario');
   if (isScenario(fromUrl)) setScenario(fromUrl);
+  const failAssets = params.get('failAssets');
+  if (failAssets !== null) setAssetFailure(failAssets || null);
 }
 
 /**

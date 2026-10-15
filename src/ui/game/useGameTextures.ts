@@ -13,13 +13,17 @@ export function useGameTextures(): { state: TextureLoadState; retry: () => void 
 
   useEffect(() => {
     let cancelled = false;
+    // Other files keep reporting progress after a failure rejected the load.
+    let settled = false;
     loadGameTextures((progress) => {
-      if (!cancelled) setState({ status: 'loading', progress });
+      if (!cancelled && !settled) setState({ status: 'loading', progress });
     })
       .then((textures) => {
+        settled = true;
         if (!cancelled) setState({ status: 'ready', textures });
       })
       .catch((error: unknown) => {
+        settled = true;
         if (cancelled) return;
         console.warn('[assets] failed to load game textures', error);
         setState({ status: 'error', message: 'Some game assets could not be loaded.' });

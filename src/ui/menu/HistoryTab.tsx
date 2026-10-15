@@ -74,7 +74,7 @@ export function HistoryTab({ playerId, onRetryPending }: { playerId: string; onR
               </tbody>
             </table>
           </div>
-          <Pager page={data.page} totalPages={data.totalPages} onChange={setPage} label="Match history" />
+          <Pager page={page} totalPages={data.totalPages} onChange={setPage} label="Match history" />
         </>
       ) : null}
     </div>

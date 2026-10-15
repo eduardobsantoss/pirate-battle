@@ -1,8 +1,8 @@
-import { delay, http, HttpResponse } from 'msw';
+import { delay, http, HttpResponse, passthrough } from 'msw';
 import type { ApiErrorBody, MatchRecordInput } from '../api/contracts';
 import { createRng } from '../game/rng';
 import { insertMatch, queryHistory, queryRanking } from './db';
-import { baseLatencyMs, getScenario } from './scenarios';
+import { baseLatencyMs, getAssetFailure, getScenario } from './scenarios';
 
 /** Longer than any client timeout: the request "hangs". */
 const HANG_MS = 120_000;
@@ -137,5 +137,12 @@ export const handlers = [
     if (short) return short;
     const result = insertMatch(body);
     return HttpResponse.json(result, { status: result.created ? 201 : 200 });
+  }),
+
+  // Simulated asset outage (Options → Mock network → "Fail game assets").
+  http.get('*/assets/png/*', ({ request }) => {
+    const pattern = getAssetFailure();
+    if (pattern && request.url.includes(pattern)) return HttpResponse.error();
+    return passthrough();
   }),
 ];

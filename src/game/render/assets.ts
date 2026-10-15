@@ -1,4 +1,4 @@
-import { Assets, Rectangle, Texture } from 'pixi.js';
+import { Assets, loadTextures, Rectangle, Texture } from 'pixi.js';
 import { WATER_TILE } from '../arena';
 import type { ShipKind } from '../sim/types';
 
@@ -58,6 +58,10 @@ function manifest(v: Variant): Map<string, string> {
   for (const h of HUD) entries.set(h, `${base}/ui/hud/${h}.png`);
   return entries;
 }
+
+// Decode on the main thread so every request goes through the page (and the
+// mock service worker), keeping loading failures observable and testable.
+if (loadTextures.config) loadTextures.config.preferWorkers = false;
 
 let cached: GameTextures | null = null;
 let attempt = 0;
