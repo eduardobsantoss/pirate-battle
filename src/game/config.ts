@@ -111,7 +111,7 @@ export const DEFAULT_CONFIG: GameConfig = {
     intervalSec: DEFAULT_OPTIONS.spawnIntervalSec,
     initialDelaySec: 1.5,
     minDistanceFromPlayer: 380,
-    maxAlive: 10,
+    maxAlive: 8,
     weights: { chaser: 0.5, shooter: 0.5 },
     openingSequence: ['chaser', 'shooter'],
   },
@@ -138,7 +138,7 @@ export const DEFAULT_CONFIG: GameConfig = {
     acceleration: 200,
     turnSpeed: 2.2,
     radius: 22,
-    contactDamage: 20,
+    contactDamage: 15,
   },
   shooter: {
     maxHealth: 50,
@@ -149,7 +149,7 @@ export const DEFAULT_CONFIG: GameConfig = {
     attackRange: 400,
     preferredDistance: 260,
     aimTolerance: 0.3,
-    cannon: { damage: 10, projectileSpeed: 360, range: 440, cooldownMs: 1600 },
+    cannon: { damage: 8, projectileSpeed: 360, range: 440, cooldownMs: 1800 },
   },
   projectileRadius: 5,
 };

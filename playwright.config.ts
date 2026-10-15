@@ -18,7 +18,7 @@ export default defineConfig({
     timeout: 10_000,
     toHaveScreenshot: { maxDiffPixelRatio: 0.02, animations: 'disabled', caret: 'hide' },
   },
-  reporter: [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]],
+  reporter: [['list'], ['html', { open: 'never', outputFolder: 'reports/playwright' }]],
   snapshotPathTemplate: '{testDir}/__screenshots__/{projectName}/{testFilePath}/{arg}{ext}',
   use: {
     baseURL: `http://localhost:${PORT}`,
